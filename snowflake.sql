@@ -1,19 +1,17 @@
--- 7. Create Snowpipe for automated ingestion
-CREATE OR REPLACE PIPE weather_db.raw.weather_pipe
-AUTO_INGEST = TRUE
-AS
-COPY INTO weather_db.raw.weather_raw
-FROM @weather_stage
-FILE_FORMAT = (TYPE = 'JSON');
+-- ==========================================
+-- STEP 1: Foundation & Security
+-- ==========================================
+CREATE DATABASE IF NOT EXISTS weather_db;
+CREATE SCHEMA IF NOT EXISTS weather_db.raw;
 
+USE DATABASE weather_db;
+USE SCHEMA raw;
 
--- 8. Pipe Monitoring and Troubleshooting Commands
-SHOW PIPES;
+CREATE OR REPLACE STORAGE INTEGRATION s3_weather_integration
+  TYPE = EXTERNAL_STAGE
+  STORAGE_PROVIDER = 'S3'
+  ENABLED = TRUE
+  STORAGE_ALLOWED_LOCATIONS = ('s3://weather-data-pipeline-landing-zone/raw-data/')
+  STORAGE_AWS_ROLE_ARN = 'SNOWFLAKE_ROLE_ARN';
 
-SELECT SYSTEM$PIPE_STATUS('weather_pipe');
-
--- SELECT * FROM TABLE(INFORMATION_SCHEMA.PIPE_USAGE_HISTORY(
---     DATE_RANGE_START=>DATEADD('hour',-1,CURRENT_TIMESTAMP()),
---     PIPE_NAME=>'weather_pipe'));
-
--- ALTER PIPE weather_pipe REFRESH;
+DESC INTEGRATION s3_weather_integration;
