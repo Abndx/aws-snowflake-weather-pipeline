@@ -1,17 +1,12 @@
 -- ==========================================
--- STEP 1: Foundation & Security
+-- STEP 2: The Landing Zone
 -- ==========================================
-CREATE DATABASE IF NOT EXISTS weather_db;
-CREATE SCHEMA IF NOT EXISTS weather_db.raw;
+CREATE OR REPLACE TABLE weather_raw (
+    v variant
+);
 
-USE DATABASE weather_db;
-USE SCHEMA raw;
+CREATE OR REPLACE STAGE weather_stage
+  URL = 's3://weather-data-pipeline-landing-zone/raw-data/'
+  STORAGE_INTEGRATION = s3_weather_integration;
 
-CREATE OR REPLACE STORAGE INTEGRATION s3_weather_integration
-  TYPE = EXTERNAL_STAGE
-  STORAGE_PROVIDER = 'S3'
-  ENABLED = TRUE
-  STORAGE_ALLOWED_LOCATIONS = ('s3://weather-data-pipeline-landing-zone/raw-data/')
-  STORAGE_AWS_ROLE_ARN = 'SNOWFLAKE_ROLE_ARN';
-
-DESC INTEGRATION s3_weather_integration;
+LIST @weather_stage;
