@@ -17,7 +17,6 @@ This project implements a modern ELT (Extract, Load, Transform) pattern with zer
 * **Cloud Infrastructure:** AWS (Lambda, S3, DynamoDB, EventBridge, IAM)
 * **Data Warehouse:** Snowflake (Snowpipe, External Stages, Storage Integrations)
 * **Languages:** Python 3.x, SQL
-* **Frontend:** Streamlit
 * **Data Format:** Semi-structured JSON
 
 ## 📁 Repository Structure
